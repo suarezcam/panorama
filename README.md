@@ -1,0 +1,2 @@
+# panorama
+Revisión editorial inicial
