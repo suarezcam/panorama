@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formato de Evaluación por Pares — Revista Panorama</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul:    #2C4251;
+    --rojo:    #D16666;
+    --blanco:  #FFFFFF;
+    --azul-cl: #3d5a6e;
+    --azul-xs: #eef2f5;
+    --gris:    #f7f8f9;
+    --gris-bd: #dde3e8;
+    --texto:   #1a2830;
+    --muted:   #6b7f8c;
+    --sat:     #2e7d4f;
+    --sat-bg:  #edf7f1;
+    --par:     #b45a00;
+    --par-bg:  #fff5e6;
+    --ins:     #c0392b;
+    --ins-bg:  #fdf0ef;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 400;
+    background: var(--gris);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  .nav-outer {
+    background: var(--azul);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  }
+  .nav-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,.55);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: .04em;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color .2s, border-color .2s;
+    text-transform: uppercase;
+  }
+  .nav-btn:hover { color: rgba(255,255,255,.85); }
+  .nav-btn.active {
+    color: var(--rojo);
+    border-bottom-color: var(--rojo);
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    background: var(--azul);
+    padding: 36px 24px 32px;
+    text-align: center;
+  }
+  .page-header .kicker {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--rojo);
+    margin-bottom: 8px;
+  }
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--blanco);
+    line-height: 1.25;
+  }
+  .page-header .subtitle {
+    font-size: 13.5px;
+    color: rgba(255,255,255,.55);
+    margin-top: 6px;
+    font-weight: 300;
+  }
+
+  /* ── FORMS ── */
+  .form-wrap {
+    display: none;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .form-wrap.active { display: block; }
+
+  /* ── SECTIONS ── */
+  .section {
+    background: var(--blanco);
+    border: 1px solid var(--gris-bd);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-head {
+    background: var(--azul-xs);
+    border-bottom: 1px solid var(--gris-bd);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-head .num {
+    width: 24px; height: 24px;
+    background: var(--azul);
+    color: var(--blanco);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-head h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--azul);
+  }
+  .section-body { padding: 22px; }
+
+  /* ── FIELD ── */
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--azul);
+    margin-bottom: 6px;
+    letter-spacing: .01em;
+  }
+  .field .hint {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+  .field input[type="text"],
+  .field input[type="email"],
+  .field textarea {
+    width: 100%;
+    border: 1px solid var(--gris-bd);
+    border-radius: 5px;
+    padding: 9px 12px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    color: var(--texto);
+    background: var(--blanco);
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+  }
+  .field input[type="text"]:focus,
+  .field input[type="email"]:focus,
+  .field textarea:focus {
+    border-color: var(--azul-cl);
+    box-shadow: 0 0 0 3px rgba(44,66,81,.1);
+  }
+  .field input[readonly] {
+    background: var(--gris);
+    color: var(--muted);
+    cursor: default;
+  }
+  .field textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+  .field textarea.tall { min-height: 130px; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+  /* ── CRITERIOS ── */
+  .criterio {
+    border: 1px solid var(--gris-bd);
+    border-radius: 6px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .criterio:last-child { margin-bottom: 0; }
+  .criterio-label {
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--texto);
+    background: var(--gris);
+    border-bottom: 1px solid var(--gris-bd);
+  }
+  .criterio-label em {
+    display: block;
+    font-size: 11.5px;
+    font-style: normal;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .escala {
+    display: flex;
+    gap: 0;
+  }
+  .escala-opt {
+    flex: 1;
+    position: relative;
+  }
+  .escala-opt input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+  .escala-opt label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 6px;
+    cursor: pointer;
+    font-size: 11.5px;
+    font-weight: 500;
+    text-align: center;
+    border-right: 1px solid var(--gris-bd);
+    transition: background .15s, color .15s;
+    line-height: 1.3;
+    min-height: 52px;
+    color: var(--muted);
+    margin: 0;
+    letter-spacing: 0;
+  }
+  .escala-opt:last-child label { border-right: none; }
+  .escala-opt input:checked + label.sat {
+    background: var(--sat-bg);
+    color: var(--sat);
+  }
+  .escala-opt input:checked + label.par {
+    background: var(--par-bg);
+    color: var(--par);
+  }
+  .escala-opt input:checked + label.ins {
+    background: var(--ins-bg);
+    color: var(--ins);
+  }
+  .escala-opt label:hover { background: var(--azul-xs); color: var(--azul); }
+  .escala-opt input:checked + label { font-weight: 600; }
+
+  /* ── RECOMENDACIÓN FINAL ── */
+  .rec-opts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .rec-opt {
+    position: relative;
+  }
+  .rec-opt input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+  .rec-opt label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--gris-bd);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: border-color .15s, background .15s, color .15s;
+    margin: 0;
+    letter-spacing: 0;
+  }
+  .rec-opt label::before {
+    content: '';
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--gris-bd);
+    flex-shrink: 0;
+    transition: border-color .15s, background .15s;
+  }
+  .rec-opt input:checked + label {
+    border-color: var(--azul);
+    color: var(--azul);
+    background: var(--azul-xs);
+  }
+  .rec-opt input:checked + label::before {
+    border-color: var(--azul);
+    background: var(--azul);
+    box-shadow: inset 0 0 0 3px var(--blanco);
+  }
+  .rec-opt.rec-aprobado input:checked + label {
+    border-color: var(--sat);
+    color: var(--sat);
+    background: var(--sat-bg);
+  }
+  .rec-opt.rec-aprobado input:checked + label::before {
+    border-color: var(--sat);
+    background: var(--sat);
+  }
+  .rec-opt.rec-modificaciones input:checked + label {
+    border-color: var(--par);
+    color: var(--par);
+    background: var(--par-bg);
+  }
+  .rec-opt.rec-modificaciones input:checked + label::before {
+    border-color: var(--par);
+    background: var(--par);
+  }
+  .rec-opt.rec-rechazado input:checked + label {
+    border-color: var(--ins);
+    color: var(--ins);
+    background: var(--ins-bg);
+  }
+  .rec-opt.rec-rechazado input:checked + label::before {
+    border-color: var(--ins);
+    background: var(--ins);
+  }
+
+  /* ── NOTA CONFIDENCIAL ── */
+  .confidential-note {
+    font-size: 11.5px;
+    color: var(--rojo);
+    font-weight: 600;
+    letter-spacing: .03em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  /* ── SUBMIT ── */
+  .submit-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 28px;
+  }
+  .btn-submit {
+    background: var(--rojo);
+    color: var(--blanco);
+    border: none;
+    border-radius: 6px;
+    padding: 13px 32px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: .04em;
+    transition: background .2s, transform .1s;
+  }
+  .btn-submit:hover { background: #bc4f4f; }
+  .btn-submit:active { transform: scale(.98); }
+
+  /* ── TIPO BADGE ── */
+  .tipo-badge {
+    display: inline-block;
+    background: var(--rojo);
+    color: var(--blanco);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 22px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--gris-bd);
+    margin: 20px 0;
+  }
+
+  /* Print */
+  @media print {
+    .nav-outer, .btn-submit { display: none; }
+    .form-wrap { display: block !important; padding: 0; }
+    .form-wrap:not(.active) { display: none !important; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <p class="kicker">Politécnico Grancolombiano</p>
+  <h1>Revista Panorama</h1>
+  <p class="subtitle">Formato de Evaluación por Pares Académicos</p>
+</div>
+
+<!-- NAV -->
+<div class="nav-outer">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showForm('empirica', this)">Investigación empírica</button>
+    <button class="nav-btn" onclick="showForm('revision', this)">Revisión de literatura</button>
+    <button class="nav-btn" onclick="showForm('reflexion', this)">Reflexión</button>
+    <button class="nav-btn" onclick="showForm('sistematizacion', this)">Sistematización de experiencias</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     FORMULARIO 1 — INVESTIGACIÓN EMPÍRICA
+     ══════════════════════════════════════════════════════ -->
+<div class="form-wrap active" id="form-empirica">
+  <div class="tipo-badge">Investigación empírica</div>
+
+  <!-- I. Manuscrito -->
+  <div class="section">
+    <div class="section-head"><span class="num">I</span><h2>Datos del manuscrito</h2></div>
+    <div class="section-body">
+      <div class="field">
+        <label>Título del artículo</label>
+        <input type="text" readonly value="[Título del manuscrito — cargado por el sistema]">
+      </div>
+      <div class="field">
+        <label>Fecha de evaluación</label>
+        <input type="text" placeholder="DD / MM / AAAA">
+      </div>
+    </div>
+  </div>
+
+  <!-- II. Evaluador -->
+  <div class="section">
+    <div class="section-head"><span class="num">II</span><h2>Datos del evaluador o evaluadora</h2></div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Nombre completo</label>
+          <input type="text" placeholder="Nombres y apellidos">
+        </div>
+        <div class="field">
+          <label>Número de cédula</label>
+          <input type="text" placeholder="Número de identificación">
+        </div>
+      </div>
+      <div class="field">
+        <label>Filiación institucional</label>
+        <input type="text" placeholder="Universidad o institución de adscripción actual">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>CvLAC</label>
+          <div class="hint">Solo para evaluadores colombianos</div>
+          <input type="text" placeholder="URL del perfil CvLAC">
+        </div>
+        <div class="field">
+          <label>ORCID</label>
+          <input type="text" placeholder="https://orcid.org/0000-0000-0000-0000">
+        </div>
+      </div>
+      <div class="field">
+        <label>Correo electrónico</label>
+        <input type="email" placeholder="correo@institución.edu">
+      </div>
+    </div>
+  </div>
+
+  <!-- III. Criterios -->
+  <div class="section">
+    <div class="section-head"><span class="num">III</span><h2>Criterios de evaluación</h2></div>
+    <div class="section-body">
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:18px;">Seleccione una opción para cada criterio: <strong style="color:var(--sat)">Satisfactorio</strong> · <strong style="color:var(--par)">Parcialmente satisfactorio</strong> · <strong style="color:var(--ins)">Insatisfactorio</strong></p>
+
+      <!-- Criterios generales -->
+      <p style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--azul);margin-bottom:10px;">Criterios generales</p>
+
+      <!-- Criterio -->
+      <div class="criterio">
+        <div class="criterio-label">Pertinencia temática con el enfoque educativo de la revista</div>
+        <div class="escala">
+          <div class="escala-opt"><input type="radio" name="e1_1" id="e1_1_s"><label class="sat" for="e1_1_s">Satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_1" id="e1_1_p"><label class="par" for="e1_1_p">Parcialmente satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_1" id="e1_1_i"><label class="ins" for="e1_1_i">Insatisfactorio</label></div>
+        </div>
+      </div>
+
+      <div class="criterio">
+        <div class="criterio-label">Originalidad y aporte al campo del conocimiento</div>
+        <div class="escala">
+          <div class="escala-opt"><input type="radio" name="e1_2" id="e1_2_s"><label class="sat" for="e1_2_s">Satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_2" id="e1_2_p"><label class="par" for="e1_2_p">Parcialmente satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_2" id="e1_2_i"><label class="ins" for="e1_2_i">Insatisfactorio</label></div>
+        </div>
+      </div>
+
+      <div class="criterio">
+        <div class="criterio-label">Rigor conceptual y argumentativo</div>
+        <div class="escala">
+          <div class="escala-opt"><input type="radio" name="e1_3" id="e1_3_s"><label class="sat" for="e1_3_s">Satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_3" id="e1_3_p"><label class="par" for="e1_3_p">Parcialmente satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_3" id="e1_3_i"><label class="ins" for="e1_3_i">Insatisfactorio</label></div>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <p style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--azul);margin-bottom:10px;">Estructura IMRD</p>
+
+      <div class="criterio">
+        <div class="criterio-label">Introducción
+          <em>Claridad del problema de conocimiento, soporte teórico y objetivo</em>
+        </div>
+        <div class="escala">
+          <div class="escala-opt"><input type="radio" name="e1_4" id="e1_4_s"><label class="sat" for="e1_4_s">Satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_4" id="e1_4_p"><label class="par" for="e1_4_p">Parcialmente satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_4" id="e1_4_i"><label class="ins" for="e1_4_i">Insatisfactorio</label></div>
+        </div>
+      </div>
+
+      <div class="criterio">
+        <div class="criterio-label">Método
+          <em>Alcance, enfoque, diseño, participantes, instrumentos, análisis y consideraciones éticas</em>
+        </div>
+        <div class="escala">
+          <div class="escala-opt"><input type="radio" name="e1_5" id="e1_5_s"><label class="sat" for="e1_5_s">Satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_5" id="e1_5_p"><label class="par" for="e1_5_p">Parcialmente satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_5" id="e1_5_i"><label class="ins" for="e1_5_i">Insatisfactorio</label></div>
+        </div>
+      </div>
+
+      <div class="criterio">
+        <div class="criterio-label">Resultados
+          <em>Coherencia con el método y los objetivos; uso adecuado de técnicas de análisis</em>
+        </div>
+        <div class="escala">
+          <div class="escala-opt"><input type="radio" name="e1_6" id="e1_6_s"><label class="sat" for="e1_6_s">Satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_6" id="e1_6_p"><label class="par" for="e1_6_p">Parcialmente satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_6" id="e1_6_i"><label class="ins" for="e1_6_i">Insatisfactorio</label></div>
+        </div>
+      </div>
+
+      <div class="criterio">
+        <div class="criterio-label">Discusión
+          <em>Diálogo con literatura vigente; fortalezas, limitaciones y prospectiva</em>
+        </div>
+        <div class="escala">
+          <div class="escala-opt"><input type="radio" name="e1_7" id="e1_7_s"><label class="sat" for="e1_7_s">Satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_7" id="e1_7_p"><label class="par" for="e1_7_p">Parcialmente satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_7" id="e1_7_i"><label class="ins" for="e1_7_i">Insatisfactorio</label></div>
+        </div>
+      </div>
+
+      <div class="criterio">
+        <div class="criterio-label">Rigurosidad metodológica general</div>
+        <div class="escala">
+          <div class="escala-opt"><input type="radio" name="e1_8" id="e1_8_s"><label class="sat" for="e1_8_s">Satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_8" id="e1_8_p"><label class="par" for="e1_8_p">Parcialmente satisfactorio</label></div>
+          <div class="escala-opt"><input type="radio" name="e1_8" id="e1_8_i"><label class="ins" for="e1_8_i">Insatisfactorio</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IV. Comentarios -->
+  <div class="section">
+    <div class="section-head"><span class="num">IV</span><h2>Comentarios al autor o autora</h2></div>
+    <div class="section-body">
+      <div class="field">
+        <label>Aspectos conceptuales</label>
+        <textarea class="tall" placeholder="Comente sobre el marco teórico, los conceptos centrales y su desarrollo en el artículo..."></textarea>
+      </div>
+      <div class="field">
+        <label>Aspectos metodológicos</label>
+        <textarea class="tall" placeholder="Comente sobre el diseño, los instrumentos, el análisis y la coherencia metodológica..."></textarea>
+      </div>
+      <div class="field">
+        <label>Uso de fuentes</label>
+        <textarea placeholder="Comente sobre la pertinencia, actualidad y diversidad de las referencias bibliográficas..."></textarea>
+      </div>
+      <div class="field">
+        <label>Recomendaciones</label>
+        <textarea class="tall" placeholder="Indique de forma clara y específica los ajustes que el autor o autora debe realizar..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- V. Recomendación final -->
+  <div class="section">
+    <div class="section-head"><span class="num">V</span><h2>Recomendación final</h2></div>
+    <div class="section-body">
+      <div class="rec-opts">
+        <div class="rec-opt rec-aprobado">
+          <input type="radio" name="e1_rec" id="e1_rec1">
+          <label for="e1_rec1">Aprobado sin modificaciones</label>
+        </div>
+        <div class="rec-opt rec-modificaciones">
+          <input type="radio" name="e1_rec" id="e1_rec2">
+          <label for="e1_rec2">Aprobado con modificaciones</label>
+        </div>
+        <div class="rec-opt rec-rechazado">
+          <input type="radio" name="e1_rec" id="e1_rec3">
+          <label for="e1_rec3">Rechazado</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VI. Comentarios comité -->
+  <div class="section">
+    <div class="section-head"><span class="num">VI</span><h2>Comentarios para el Comité Editorial</h2></div>
+    <div class="section-body">
+      <p class="confidential-note">⚑ Confidencial — no visible para los autores</p>
+      <div class="field">
+        <textarea class="tall" placeholder="Observaciones reservadas para el comité editorial..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="submit-row"><button class="btn-submit">Enviar evaluación</button></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     FORMULARIO 2 — REVISIÓN O SISTEMATIZACIÓN DE LITERATURA
+     ══════════════════════════════════════════════════════ -->
+<div class="form-wrap" id="form-revision">
+  <div class="tipo-badge">Revisión o sistematización de literatura</div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">I</span><h2>Datos del manuscrito</h2></div>
+    <div class="section-body">
+      <div class="field"><label>Título del artículo</label><input type="text" readonly value="[Título del manuscrito — cargado por el sistema]"></div>
+      <div class="field"><label>Fecha de evaluación</label><input type="text" placeholder="DD / MM / AAAA"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">II</span><h2>Datos del evaluador o evaluadora</h2></div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field"><label>Nombre completo</label><input type="text" placeholder="Nombres y apellidos"></div>
+        <div class="field"><label>Número de cédula</label><input type="text" placeholder="Número de identificación"></div>
+      </div>
+      <div class="field"><label>Filiación institucional</label><input type="text" placeholder="Universidad o institución de adscripción actual"></div>
+      <div class="field-row">
+        <div class="field"><label>CvLAC</label><div class="hint">Solo para evaluadores colombianos</div><input type="text" placeholder="URL del perfil CvLAC"></div>
+        <div class="field"><label>ORCID</label><input type="text" placeholder="https://orcid.org/0000-0000-0000-0000"></div>
+      </div>
+      <div class="field"><label>Correo electrónico</label><input type="email" placeholder="correo@institución.edu"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">III</span><h2>Criterios de evaluación</h2></div>
+    <div class="section-body">
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:18px;">Seleccione una opción para cada criterio: <strong style="color:var(--sat)">Satisfactorio</strong> · <strong style="color:var(--par)">Parcialmente satisfactorio</strong> · <strong style="color:var(--ins)">Insatisfactorio</strong></p>
+
+      <p style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--azul);margin-bottom:10px;">Criterios generales</p>
+
+      <div class="criterio"><div class="criterio-label">Pertinencia temática con el enfoque educativo de la revista</div><div class="escala"><div class="escala-opt"><input type="radio" name="r_1" id="r_1_s"><label class="sat" for="r_1_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_1" id="r_1_p"><label class="par" for="r_1_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_1" id="r_1_i"><label class="ins" for="r_1_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Originalidad y aporte al campo del conocimiento</div><div class="escala"><div class="escala-opt"><input type="radio" name="r_2" id="r_2_s"><label class="sat" for="r_2_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_2" id="r_2_p"><label class="par" for="r_2_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_2" id="r_2_i"><label class="ins" for="r_2_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Rigor conceptual y argumentativo</div><div class="escala"><div class="escala-opt"><input type="radio" name="r_3" id="r_3_s"><label class="sat" for="r_3_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_3" id="r_3_p"><label class="par" for="r_3_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_3" id="r_3_i"><label class="ins" for="r_3_i">Insatisfactorio</label></div></div></div>
+
+      <hr class="divider">
+      <p style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--azul);margin-bottom:10px;">Estructura y método de revisión</p>
+
+      <div class="criterio"><div class="criterio-label">Declaración del tipo de revisión y protocolo seguido<em>Revisión sistemática (PRISMA), revisión de alcance (PRISMA ScR), metaanálisis, bibliometría, u otro</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="r_4" id="r_4_s"><label class="sat" for="r_4_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_4" id="r_4_p"><label class="par" for="r_4_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_4" id="r_4_i"><label class="ins" for="r_4_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Criterios de inclusión y exclusión de fuentes<em>Claridad, pertinencia y coherencia con el objetivo</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="r_5" id="r_5_s"><label class="sat" for="r_5_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_5" id="r_5_p"><label class="par" for="r_5_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_5" id="r_5_i"><label class="ins" for="r_5_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Análisis crítico y síntesis de la literatura</div><div class="escala"><div class="escala-opt"><input type="radio" name="r_6" id="r_6_s"><label class="sat" for="r_6_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_6" id="r_6_p"><label class="par" for="r_6_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_6" id="r_6_i"><label class="ins" for="r_6_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Discusión y prospectiva<em>Diálogo con la literatura vigente; fortalezas, limitaciones y líneas futuras</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="r_7" id="r_7_s"><label class="sat" for="r_7_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_7" id="r_7_p"><label class="par" for="r_7_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="r_7" id="r_7_i"><label class="ins" for="r_7_i">Insatisfactorio</label></div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">IV</span><h2>Comentarios al autor o autora</h2></div>
+    <div class="section-body">
+      <div class="field"><label>Aspectos conceptuales</label><textarea class="tall" placeholder="Comente sobre los conceptos centrales y su desarrollo en la revisión..."></textarea></div>
+      <div class="field"><label>Aspectos metodológicos</label><textarea class="tall" placeholder="Comente sobre el protocolo seguido, los criterios de búsqueda y el rigor del análisis..."></textarea></div>
+      <div class="field"><label>Uso de fuentes</label><textarea placeholder="Comente sobre la pertinencia, actualidad, cobertura y diversidad de las fuentes revisadas..."></textarea></div>
+      <div class="field"><label>Recomendaciones</label><textarea class="tall" placeholder="Indique de forma clara y específica los ajustes que el autor o autora debe realizar..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">V</span><h2>Recomendación final</h2></div>
+    <div class="section-body">
+      <div class="rec-opts">
+        <div class="rec-opt rec-aprobado"><input type="radio" name="r_rec" id="r_rec1"><label for="r_rec1">Aprobado sin modificaciones</label></div>
+        <div class="rec-opt rec-modificaciones"><input type="radio" name="r_rec" id="r_rec2"><label for="r_rec2">Aprobado con modificaciones</label></div>
+        <div class="rec-opt rec-rechazado"><input type="radio" name="r_rec" id="r_rec3"><label for="r_rec3">Rechazado</label></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">VI</span><h2>Comentarios para el Comité Editorial</h2></div>
+    <div class="section-body">
+      <p class="confidential-note">⚑ Confidencial — no visible para los autores</p>
+      <div class="field"><textarea class="tall" placeholder="Observaciones reservadas para el comité editorial..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="submit-row"><button class="btn-submit">Enviar evaluación</button></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     FORMULARIO 3 — REFLEXIÓN
+     ══════════════════════════════════════════════════════ -->
+<div class="form-wrap" id="form-reflexion">
+  <div class="tipo-badge">Artículo de reflexión</div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">I</span><h2>Datos del manuscrito</h2></div>
+    <div class="section-body">
+      <div class="field"><label>Título del artículo</label><input type="text" readonly value="[Título del manuscrito — cargado por el sistema]"></div>
+      <div class="field"><label>Fecha de evaluación</label><input type="text" placeholder="DD / MM / AAAA"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">II</span><h2>Datos del evaluador o evaluadora</h2></div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field"><label>Nombre completo</label><input type="text" placeholder="Nombres y apellidos"></div>
+        <div class="field"><label>Número de cédula</label><input type="text" placeholder="Número de identificación"></div>
+      </div>
+      <div class="field"><label>Filiación institucional</label><input type="text" placeholder="Universidad o institución de adscripción actual"></div>
+      <div class="field-row">
+        <div class="field"><label>CvLAC</label><div class="hint">Solo para evaluadores colombianos</div><input type="text" placeholder="URL del perfil CvLAC"></div>
+        <div class="field"><label>ORCID</label><input type="text" placeholder="https://orcid.org/0000-0000-0000-0000"></div>
+      </div>
+      <div class="field"><label>Correo electrónico</label><input type="email" placeholder="correo@institución.edu"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">III</span><h2>Criterios de evaluación</h2></div>
+    <div class="section-body">
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:18px;">Seleccione una opción para cada criterio: <strong style="color:var(--sat)">Satisfactorio</strong> · <strong style="color:var(--par)">Parcialmente satisfactorio</strong> · <strong style="color:var(--ins)">Insatisfactorio</strong></p>
+
+      <p style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--azul);margin-bottom:10px;">Criterios generales</p>
+
+      <div class="criterio"><div class="criterio-label">Pertinencia temática con el enfoque educativo de la revista</div><div class="escala"><div class="escala-opt"><input type="radio" name="rf_1" id="rf_1_s"><label class="sat" for="rf_1_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_1" id="rf_1_p"><label class="par" for="rf_1_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_1" id="rf_1_i"><label class="ins" for="rf_1_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Originalidad y aporte al campo del conocimiento</div><div class="escala"><div class="escala-opt"><input type="radio" name="rf_2" id="rf_2_s"><label class="sat" for="rf_2_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_2" id="rf_2_p"><label class="par" for="rf_2_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_2" id="rf_2_i"><label class="ins" for="rf_2_i">Insatisfactorio</label></div></div></div>
+
+      <hr class="divider">
+      <p style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--azul);margin-bottom:10px;">Estructura argumentativa</p>
+
+      <div class="criterio"><div class="criterio-label">Tesis explícita y bien delimitada<em>La posición del autor está claramente enunciada desde la introducción</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="rf_3" id="rf_3_s"><label class="sat" for="rf_3_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_3" id="rf_3_p"><label class="par" for="rf_3_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_3" id="rf_3_i"><label class="ins" for="rf_3_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Desarrollo argumentativo<em>Coherencia lógica, progresión de los argumentos, uso de contraargumentos</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="rf_4" id="rf_4_s"><label class="sat" for="rf_4_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_4" id="rf_4_p"><label class="par" for="rf_4_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_4" id="rf_4_i"><label class="ins" for="rf_4_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Sustento en fuentes pertinentes<em>Las referencias apoyan y enriquecen la argumentación</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="rf_5" id="rf_5_s"><label class="sat" for="rf_5_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_5" id="rf_5_p"><label class="par" for="rf_5_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_5" id="rf_5_i"><label class="ins" for="rf_5_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Conclusión<em>Síntesis del trabajo y apertura de perspectivas</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="rf_6" id="rf_6_s"><label class="sat" for="rf_6_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_6" id="rf_6_p"><label class="par" for="rf_6_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_6" id="rf_6_i"><label class="ins" for="rf_6_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Rigor conceptual y filosófico<em>Uso preciso de conceptos; coherencia con la tradición teórica invocada</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="rf_7" id="rf_7_s"><label class="sat" for="rf_7_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_7" id="rf_7_p"><label class="par" for="rf_7_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="rf_7" id="rf_7_i"><label class="ins" for="rf_7_i">Insatisfactorio</label></div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">IV</span><h2>Comentarios al autor o autora</h2></div>
+    <div class="section-body">
+      <div class="field"><label>Aspectos conceptuales</label><textarea class="tall" placeholder="Comente sobre la tesis, los conceptos centrales y su desarrollo argumentativo..."></textarea></div>
+      <div class="field"><label>Aspectos metodológicos</label><textarea class="tall" placeholder="Comente sobre la estructura lógica del texto y la solidez del razonamiento filosófico..."></textarea></div>
+      <div class="field"><label>Uso de fuentes</label><textarea placeholder="Comente sobre la pertinencia y actualidad de las referencias que sustentan la reflexión..."></textarea></div>
+      <div class="field"><label>Recomendaciones</label><textarea class="tall" placeholder="Indique de forma clara y específica los ajustes que el autor o autora debe realizar..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">V</span><h2>Recomendación final</h2></div>
+    <div class="section-body">
+      <div class="rec-opts">
+        <div class="rec-opt rec-aprobado"><input type="radio" name="rf_rec" id="rf_rec1"><label for="rf_rec1">Aprobado sin modificaciones</label></div>
+        <div class="rec-opt rec-modificaciones"><input type="radio" name="rf_rec" id="rf_rec2"><label for="rf_rec2">Aprobado con modificaciones</label></div>
+        <div class="rec-opt rec-rechazado"><input type="radio" name="rf_rec" id="rf_rec3"><label for="rf_rec3">Rechazado</label></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">VI</span><h2>Comentarios para el Comité Editorial</h2></div>
+    <div class="section-body">
+      <p class="confidential-note">⚑ Confidencial — no visible para los autores</p>
+      <div class="field"><textarea class="tall" placeholder="Observaciones reservadas para el comité editorial..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="submit-row"><button class="btn-submit">Enviar evaluación</button></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     FORMULARIO 4 — SISTEMATIZACIÓN DE EXPERIENCIAS
+     ══════════════════════════════════════════════════════ -->
+<div class="form-wrap" id="form-sistematizacion">
+  <div class="tipo-badge">Sistematización de experiencias</div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">I</span><h2>Datos del manuscrito</h2></div>
+    <div class="section-body">
+      <div class="field"><label>Título del artículo</label><input type="text" readonly value="[Título del manuscrito — cargado por el sistema]"></div>
+      <div class="field"><label>Fecha de evaluación</label><input type="text" placeholder="DD / MM / AAAA"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">II</span><h2>Datos del evaluador o evaluadora</h2></div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field"><label>Nombre completo</label><input type="text" placeholder="Nombres y apellidos"></div>
+        <div class="field"><label>Número de cédula</label><input type="text" placeholder="Número de identificación"></div>
+      </div>
+      <div class="field"><label>Filiación institucional</label><input type="text" placeholder="Universidad o institución de adscripción actual"></div>
+      <div class="field-row">
+        <div class="field"><label>CvLAC</label><div class="hint">Solo para evaluadores colombianos</div><input type="text" placeholder="URL del perfil CvLAC"></div>
+        <div class="field"><label>ORCID</label><input type="text" placeholder="https://orcid.org/0000-0000-0000-0000"></div>
+      </div>
+      <div class="field"><label>Correo electrónico</label><input type="email" placeholder="correo@institución.edu"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">III</span><h2>Criterios de evaluación</h2></div>
+    <div class="section-body">
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:18px;">Seleccione una opción para cada criterio: <strong style="color:var(--sat)">Satisfactorio</strong> · <strong style="color:var(--par)">Parcialmente satisfactorio</strong> · <strong style="color:var(--ins)">Insatisfactorio</strong></p>
+
+      <p style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--azul);margin-bottom:10px;">Criterios generales</p>
+
+      <div class="criterio"><div class="criterio-label">Pertinencia temática con el enfoque educativo de la revista</div><div class="escala"><div class="escala-opt"><input type="radio" name="s_1" id="s_1_s"><label class="sat" for="s_1_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_1" id="s_1_p"><label class="par" for="s_1_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_1" id="s_1_i"><label class="ins" for="s_1_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Originalidad y aporte al campo del conocimiento</div><div class="escala"><div class="escala-opt"><input type="radio" name="s_2" id="s_2_s"><label class="sat" for="s_2_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_2" id="s_2_p"><label class="par" for="s_2_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_2" id="s_2_i"><label class="ins" for="s_2_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Rigor conceptual y argumentativo</div><div class="escala"><div class="escala-opt"><input type="radio" name="s_3" id="s_3_s"><label class="sat" for="s_3_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_3" id="s_3_p"><label class="par" for="s_3_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_3" id="s_3_i"><label class="ins" for="s_3_i">Insatisfactorio</label></div></div></div>
+
+      <hr class="divider">
+      <p style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--azul);margin-bottom:10px;">Estructura de la sistematización</p>
+
+      <div class="criterio"><div class="criterio-label">Presentación y reconstrucción analítica de la experiencia<em>Va más allá de la narración cronológica; reconstrucción con sentido interpretativo</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="s_4" id="s_4_s"><label class="sat" for="s_4_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_4" id="s_4_p"><label class="par" for="s_4_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_4" id="s_4_i"><label class="ins" for="s_4_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Método de sistematización<em>Eje de sistematización, fuentes, técnicas de análisis y criterios éticos explícitos</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="s_5" id="s_5_s"><label class="sat" for="s_5_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_5" id="s_5_p"><label class="par" for="s_5_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_5" id="s_5_i"><label class="ins" for="s_5_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Análisis crítico e interpretación<em>Identificación de tensiones; diálogo con teoría educativa pertinente; aprendizajes</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="s_6" id="s_6_s"><label class="sat" for="s_6_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_6" id="s_6_p"><label class="par" for="s_6_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_6" id="s_6_i"><label class="ins" for="s_6_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Conclusión y proyección<em>Aprendizajes centrales, replicabilidad y contribución a teorías o prácticas educativas</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="s_7" id="s_7_s"><label class="sat" for="s_7_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_7" id="s_7_p"><label class="par" for="s_7_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_7" id="s_7_i"><label class="ins" for="s_7_i">Insatisfactorio</label></div></div></div>
+
+      <div class="criterio"><div class="criterio-label">Coherencia entre la experiencia relatada y el enfoque de sistematización declarado<em>El enfoque metodológico elegido es apropiado para la experiencia sistematizada</em></div><div class="escala"><div class="escala-opt"><input type="radio" name="s_8" id="s_8_s"><label class="sat" for="s_8_s">Satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_8" id="s_8_p"><label class="par" for="s_8_p">Parcialmente satisfactorio</label></div><div class="escala-opt"><input type="radio" name="s_8" id="s_8_i"><label class="ins" for="s_8_i">Insatisfactorio</label></div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">IV</span><h2>Comentarios al autor o autora</h2></div>
+    <div class="section-body">
+      <div class="field"><label>Aspectos conceptuales</label><textarea class="tall" placeholder="Comente sobre los fundamentos teóricos que sustentan la sistematización..."></textarea></div>
+      <div class="field"><label>Aspectos metodológicos</label><textarea class="tall" placeholder="Comente sobre el método de sistematización declarado y su aplicación en el texto..."></textarea></div>
+      <div class="field"><label>Uso de fuentes</label><textarea placeholder="Comente sobre la pertinencia de las fuentes teóricas y su diálogo con la experiencia..."></textarea></div>
+      <div class="field"><label>Recomendaciones</label><textarea class="tall" placeholder="Indique de forma clara y específica los ajustes que el autor o autora debe realizar..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">V</span><h2>Recomendación final</h2></div>
+    <div class="section-body">
+      <div class="rec-opts">
+        <div class="rec-opt rec-aprobado"><input type="radio" name="s_rec" id="s_rec1"><label for="s_rec1">Aprobado sin modificaciones</label></div>
+        <div class="rec-opt rec-modificaciones"><input type="radio" name="s_rec" id="s_rec2"><label for="s_rec2">Aprobado con modificaciones</label></div>
+        <div class="rec-opt rec-rechazado"><input type="radio" name="s_rec" id="s_rec3"><label for="s_rec3">Rechazado</label></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="num">VI</span><h2>Comentarios para el Comité Editorial</h2></div>
+    <div class="section-body">
+      <p class="confidential-note">⚑ Confidencial — no visible para los autores</p>
+      <div class="field"><textarea class="tall" placeholder="Observaciones reservadas para el comité editorial..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="submit-row"><button class="btn-submit">Enviar evaluación</button></div>
+</div>
+
+<script>
+  function showForm(id, btn) {
+    document.querySelectorAll('.form-wrap').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('form-' + id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
