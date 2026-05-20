@@ -1,2 +1,3 @@
 # panorama
-Revisión editorial inicial
+Gestión editorial
+https://suarezcam.github.io/panorama/
