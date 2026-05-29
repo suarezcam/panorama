@@ -31,6 +31,7 @@ body{background:var(--fondo);font-family:'Source Serif 4',serif;padding:48px 24p
 /* Editable spans */
 [contenteditable]{display:inline;outline:none;border-bottom:1.5px solid #A8BCC8;padding:0 2px 1px;min-width:10px;transition:border-color .2s,background .2s;border-radius:2px;white-space:pre-wrap;word-break:break-word;font-family:'Source Serif 4',serif;font-size:13.5px;font-weight:300;color:var(--texto);line-height:inherit;}
 strong [contenteditable]{font-weight:400;color:var(--azul);}
+[contenteditable] span, [contenteditable] div, [contenteditable] font {font-family:'Source Serif 4',serif!important;font-size:13.5px!important;font-weight:300!important;}
 [contenteditable]:focus{border-bottom-color:var(--azul);background:#EEF2F5;}
 [contenteditable].ph::before{content:attr(data-ph);color:var(--gris);font-style:italic;pointer-events:none;}
 .meta-f{display:block;font-family:'Raleway',sans-serif;font-size:12px;font-weight:400;color:var(--azul);outline:none;border-bottom:1.5px solid #A8BCC8;padding:1px 4px;min-width:120px;transition:border-color .2s,background .2s;}
@@ -183,8 +184,13 @@ function clearDoc(id){
 }
 document.querySelectorAll('[contenteditable]').forEach(el=>{
   el.addEventListener('input',function(){
-    this.classList.toggle('ph', this.textContent.trim()==='');
+  this.classList.toggle('ph', this.textContent.trim()==='');
+  this.querySelectorAll('span,div,font').forEach(n=>{
+    n.style.fontFamily="'Source Serif 4',serif";
+    n.style.fontSize='13.5px';
+    n.style.fontWeight='300';
   });
+});
   el.addEventListener('keydown',function(e){
     if(e.key==='Enter'){e.preventDefault();}
   });
